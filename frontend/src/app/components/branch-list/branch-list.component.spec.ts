@@ -109,4 +109,60 @@ describe('BranchListComponent', () => {
 
     expect(component['subscription'].unsubscribe).toHaveBeenCalled();
   });
+
+  describe('search and filter', () => {
+    it('should render a search input in the toolbar', () => {
+      const compiled = fixture.nativeElement as HTMLElement;
+      const searchInput = compiled.querySelector('input[pInputText]');
+      expect(searchInput).toBeTruthy();
+      expect(searchInput?.getAttribute('placeholder')).toBe('Search branches...');
+    });
+
+    it('should filter branches by name', () => {
+      branchService.create({ name: 'Main Office', address: '100 Main St' });
+      branchService.create({ name: 'Downtown', address: '200 Oak Ave' });
+      fixture.detectChanges();
+
+      spyOn(component.table, 'filterGlobal');
+      const event = { target: { value: 'Main' } } as unknown as Event;
+      component.onSearch(event);
+
+      expect(component.table.filterGlobal).toHaveBeenCalledWith('Main', 'contains');
+    });
+
+    it('should filter branches by address', () => {
+      branchService.create({ name: 'Main Office', address: '100 Main St' });
+      branchService.create({ name: 'Downtown', address: '200 Oak Ave' });
+      fixture.detectChanges();
+
+      spyOn(component.table, 'filterGlobal');
+      const event = { target: { value: 'Oak' } } as unknown as Event;
+      component.onSearch(event);
+
+      expect(component.table.filterGlobal).toHaveBeenCalledWith('Oak', 'contains');
+    });
+
+    it('should show no results message when filter matches nothing', () => {
+      branchService.create({ name: 'Main Office', address: '100 Main St' });
+      fixture.detectChanges();
+
+      component.table.filterGlobal('nonexistent', 'contains');
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      const emptyMessage = compiled.querySelector('tr td');
+      expect(emptyMessage?.textContent).toContain('No branches found.');
+    });
+
+    it('should clear the search filter', () => {
+      fixture.detectChanges();
+      component.searchValue = 'test';
+
+      spyOn(component.table, 'filterGlobal');
+      component.clearSearch();
+
+      expect(component.searchValue).toBe('');
+      expect(component.table.filterGlobal).toHaveBeenCalledWith('', 'contains');
+    });
+  });
 });
