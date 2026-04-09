@@ -142,4 +142,34 @@ describe('BranchFormComponent', () => {
 
     expect(component.cancel.emit).toHaveBeenCalled();
   });
+
+  it('should mark all fields as touched on save attempt with empty form', () => {
+    expect(component.branchForm.get('name')?.touched).toBeFalse();
+    expect(component.branchForm.get('address')?.touched).toBeFalse();
+
+    component.onSave();
+
+    expect(component.branchForm.get('name')?.touched).toBeTrue();
+    expect(component.branchForm.get('address')?.touched).toBeTrue();
+  });
+
+  it('should mark fields as touched when a required field is cleared during edit', () => {
+    component.branch = { id: 1, name: 'Main Office', address: '100 Main St' };
+    component.visible = true;
+    component.ngOnChanges({
+      visible: {
+        currentValue: true,
+        previousValue: false,
+        firstChange: false,
+        isFirstChange: () => false
+      }
+    });
+
+    component.branchForm.patchValue({ name: '' });
+
+    component.onSave();
+
+    expect(component.branchForm.get('name')?.touched).toBeTrue();
+    expect(component.branchForm.get('name')?.invalid).toBeTrue();
+  });
 });
