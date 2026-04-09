@@ -52,6 +52,7 @@ export class BranchFormComponent implements OnChanges {
   }
 
   onSave(): void {
+    this.branchForm.markAllAsTouched();
     if (this.branchForm.valid) {
       const formValue = this.branchForm.value;
       if (this.branch) {
