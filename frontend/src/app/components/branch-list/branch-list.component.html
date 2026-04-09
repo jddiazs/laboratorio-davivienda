@@ -1,0 +1,61 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="p-4">
+  <p-toolbar styleClass="mb-4">
+    <ng-template pTemplate="left">
+      <h2 class="m-0">Bank Branches</h2>
+    </ng-template>
+    <ng-template pTemplate="right">
+      <button
+        pButton
+        label="New Branch"
+        icon="pi pi-plus"
+        class="p-button-success"
+        (click)="openNew()"
+      ></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table [value]="branches" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-branch>
+      <tr>
+        <td>{{ branch.name }}</td>
+        <td>{{ branch.address }}</td>
+        <td>
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-info mr-2"
+            (click)="editBranch(branch)"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger"
+            (click)="deleteBranch(branch)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3" class="text-center p-4">No branches found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-branch-form
+    [visible]="displayDialog"
+    [branch]="selectedBranch"
+    (save)="onSave($event)"
+    (cancel)="onCancel()"
+  ></app-branch-form>
+</div>

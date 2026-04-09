@@ -1,0 +1,60 @@
+<p-dialog
+  [header]="dialogTitle"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  (onHide)="onCancel()"
+>
+  <form [formGroup]="branchForm" class="flex flex-column gap-3 pt-3">
+    <div class="flex flex-column gap-2">
+      <label for="name">Name</label>
+      <input
+        id="name"
+        type="text"
+        pInputText
+        formControlName="name"
+        placeholder="Enter branch name"
+      />
+      <small
+        *ngIf="branchForm.get('name')?.invalid && branchForm.get('name')?.touched"
+        class="p-error"
+      >
+        Name is required.
+      </small>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="address">Address</label>
+      <input
+        id="address"
+        type="text"
+        pInputText
+        formControlName="address"
+        placeholder="Enter branch address"
+      />
+      <small
+        *ngIf="branchForm.get('address')?.invalid && branchForm.get('address')?.touched"
+        class="p-error"
+      >
+        Address is required.
+      </small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="onCancel()"
+    ></button>
+    <button
+      pButton
+      label="Save"
+      icon="pi pi-check"
+      (click)="onSave()"
+      [disabled]="branchForm.invalid"
+    ></button>
+  </ng-template>
+</p-dialog>
