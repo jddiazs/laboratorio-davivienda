@@ -7,6 +7,24 @@
       <h2 class="m-0">Bank Branches</h2>
     </ng-template>
     <ng-template pTemplate="right">
+      <span class="p-input-icon-left mr-2">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="searchValue"
+          (input)="onSearch($event)"
+          placeholder="Search branches..."
+          class="p-inputtext-sm"
+        />
+      </span>
+      <button
+        pButton
+        icon="pi pi-times"
+        class="p-button-outlined p-button-secondary mr-2"
+        (click)="clearSearch()"
+        *ngIf="searchValue"
+      ></button>
       <button
         pButton
         label="New Branch"
@@ -17,7 +35,7 @@
     </ng-template>
   </p-toolbar>
 
-  <p-table [value]="branches" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table #dt [value]="branches" [globalFilterFields]="['name', 'address']" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
       <tr>
         <th>Name</th>

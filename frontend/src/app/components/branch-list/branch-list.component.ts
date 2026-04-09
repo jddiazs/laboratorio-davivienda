@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
+import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -16,9 +18,11 @@ import { BranchFormComponent } from '../branch-form/branch-form.component';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     TableModule,
     ButtonModule,
     ToolbarModule,
+    InputTextModule,
     ConfirmDialogModule,
     ToastModule,
     BranchFormComponent
@@ -27,9 +31,11 @@ import { BranchFormComponent } from '../branch-form/branch-form.component';
   styleUrls: ['./branch-list.component.scss']
 })
 export class BranchListComponent implements OnInit, OnDestroy {
+  @ViewChild('dt') table!: Table;
   branches: Branch[] = [];
   displayDialog = false;
   selectedBranch: Branch | null = null;
+  searchValue = '';
   private subscription!: Subscription;
 
   constructor(
@@ -97,5 +103,15 @@ export class BranchListComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     this.displayDialog = false;
+  }
+
+  onSearch(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.table.filterGlobal(value, 'contains');
+  }
+
+  clearSearch(): void {
+    this.searchValue = '';
+    this.table.filterGlobal('', 'contains');
   }
 }
