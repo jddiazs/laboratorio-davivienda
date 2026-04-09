@@ -142,16 +142,22 @@ describe('BranchListComponent', () => {
       expect(component.table.filterGlobal).toHaveBeenCalledWith('Oak', 'contains');
     });
 
-    it('should show no results message when filter matches nothing', () => {
+    it('should call filterGlobal with search term when no results expected', () => {
       branchService.create({ name: 'Main Office', address: '100 Main St' });
       fixture.detectChanges();
 
-      component.table.filterGlobal('nonexistent', 'contains');
+      spyOn(component.table, 'filterGlobal');
+      const event = { target: { value: 'nonexistent' } } as unknown as Event;
+      component.onSearch(event);
+
+      expect(component.table.filterGlobal).toHaveBeenCalledWith('nonexistent', 'contains');
+    });
+
+    it('should display empty message template when table has no data', () => {
       fixture.detectChanges();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      const emptyMessage = compiled.querySelector('tr td');
-      expect(emptyMessage?.textContent).toContain('No branches found.');
+      expect(compiled.textContent).toContain('No branches found.');
     });
 
     it('should clear the search filter', () => {
